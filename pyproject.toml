@@ -5,7 +5,10 @@ requires = ["setuptools >= 61.0", "autosemver"]
 [project]
 requires-python = ">=3.12"
 dependencies = [
-    "autosemver"
+    "autosemver",
+    "defisheye",
+    "luigi",
+    "numpy"
 ]
 name = "phenocam"
 dynamic = ["version"]
