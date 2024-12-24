@@ -69,8 +69,17 @@ i
 ```
 
 ```python
+from PIL import Image
 from skimage import transform
-transform.resize(i,(600,600), preserve_range=True, anti_aliasing=True)
+Image.fromarray(i).resize((600,600)).save('test.jpg')#, anti_aliasing=True)
+```
+
+```python
+j = Image.fromarray(i).resize((600,600))
+```
+
+```python
+j.size[0]
 ```
 
 ```python
