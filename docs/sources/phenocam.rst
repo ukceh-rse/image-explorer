@@ -1,13 +1,13 @@
-mypackage package
-=================
+phenocam package
+================
 
 Submodules
 ----------
 
-mypackage.module module
------------------------
+phenocam.module module
+----------------------
 
-.. automodule:: mypackage.module
+.. automodule:: phenocam.module
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ mypackage.module module
 Module contents
 ---------------
 
-.. automodule:: mypackage
+.. automodule:: phenocam
    :members:
    :undoc-members:
    :show-inheritance:

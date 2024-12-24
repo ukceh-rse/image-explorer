@@ -1,7 +1,7 @@
-mypackage
-=========
+phenocam
+========
 
 .. toctree::
    :maxdepth: 4
 
-   mypackage
+   phenocam

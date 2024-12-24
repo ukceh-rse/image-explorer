@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "autosemver"
 ]
-name = "mypackage"
+name = "phenocam"
 dynamic = ["version"]
 authors = [{ name = "John Doe", email = "johdoe@ceh.ac.uk" }]
 description = "A minimal setup for a template package."
@@ -16,19 +16,19 @@ description = "A minimal setup for a template package."
 test = ["pytest", "pytest-cov", "parameterized"]
 docs = ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme"]
 lint = ["ruff"]
-dev = ["mypackage[test,docs,lint]"]
+dev = ["phenocam[test,docs,lint]"]
 
 [tool.setuptools.dynamic]
-version = { attr = "mypackage.__version__" }
+version = { attr = "phenocam.__version__" }
 
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["mypackage*"]
+include = ["phenocam*"]
 
 [tool.pytest.ini_options]
 
-addopts = "--cov=mypackage"
+addopts = "--cov=phenocam"
 markers = [
     "slow: Marks slow tests",
 ]

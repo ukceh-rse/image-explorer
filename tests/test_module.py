@@ -1,5 +1,5 @@
 import unittest
-from mypackage.module import add_int
+from phenocam.module import add_int
 from parameterized import parameterized
 
 class TestModuleMethods(unittest.TestCase):

@@ -1,22 +1,13 @@
-# Python Project Template
+# Phenocam image processing
 
-[![tests badge](https://github.com/NERC-CEH/python-template/actions/workflows/pipeline.yml/badge.svg)](https://github.com/NERC-CEH/python-template/actions)
-[![docs badge](https://github.com/NERC-CEH/python-template/actions/workflows/deploy-docs.yml/badge.svg)](https://nerc-ceh.github.io/python-template/)
+[![tests badge](https://github.com/ukceh-rse/fdri-phenocam/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ukceh-rse/fdri-phenocam/actions)
+[![docs badge](https://github.com/ukceh-rse/fdri-phenocam/actions/workflows/deploy-docs.yml/badge.svg)](https://ukceh-rse.github.io/fdri-phenocam/)
 
-[Read the docs!](https://nerc-ceh.github.io/python-template)
+[Read the docs!](https://ukceh-rse.github.io/fdri-phenocam)
 
-This repository is a template for a basic Python project. Included here is:
+This repository is an experimental version of image processing pipelines for the Phenocam images on COSMOS-UK sensors. 
+It was created using the [UKCEH python project template](https://github.com/NERC-CEH/python-template) and repurposes some of the pipeline code in [plankton_ml](https://github.com/NERC-CEH/python-template). It is intended for rapid prototyping and use case refinement.
 
-* Example Python package
-* Tests
-* Documentation
-* Automatic incremental versioning
-* CI/CD
-    * Installs and tests the package
-    * Builds documentation on branches
-    * Deploys documentation on main branch
-    * Deploys docker image to AWS ECR
-* Githook to ensure linting and code checking
 
 ## Getting Started
 
@@ -64,36 +55,6 @@ The docs, tests, and linter packages can be installed together with:
 pip install -e .[dev]
 ```
 
-### Making it Your Own
-
-This repo has a single package in the `./src/...` path called `mypackage` (creative I know). Change this to the name of your package and update it in:
-
-* `docs/conf.py`
-* `src/**/*.py`
-* `tests/**/*.py`
-* `pyproject.toml`
-
-To make thing move a bit faster, use the script `./rename-package.sh` to rename all references of `mypackage` to whatever you like. For example:
-
-```
-./rename-package.sh "acoolnewname"
-```
-
-Will rename the package and all references to "acoolnewname"
-
-After doing this it is recommended to also run:
-
-```
-cd docs
-make apidoc
-```
-
-To keep your documentation in sync with the package name. You may need to delete a file called `mypackage.rst` from `./docs/sources/...`
-
-### Deploying Docs to GitHub Pages
-
-If you want docs to be published to github pages automatically, go to your repo settings and enable docs from GitHub Actions and the workflows will do the rest.
-
 ### Building Docs Locally
 
 The documentation is driven by [Sphinx](https://www.sphinx-doc.org/) an industry standard for documentation with a healthy userbase and lots of add-ons. It uses `sphinx-apidoc` to generate API documentation for the codebase from Python docstrings.
@@ -110,7 +71,7 @@ make apidoc
 
 This will populate `./docs/sources/...` with `*.rst` files for each Python module, which may be included into the documentation.
 
-Documentation can then be built locally by running `make html`, or found on the [GitHub Deployment](https://nerc-ceh.github.io/python-template).
+Documentation can then be built locally by running `make html`, or found on the [GitHub Deployment](https://ukceh-rse.github.io/fdri-phenocam).
 
 ### Run the Tests
 
@@ -134,12 +95,5 @@ This codebase is set up using [autosemver](https://autosemver.readthedocs.io/en/
 * Commit starts with `* INCOMPATIBLE:`. Use for API breaking changes
     * Increments major version `2.x.x -> 3.x.x`
 
-### Docker and the ECR
 
-The python code is packaged into a docker image and pushed to the AWS ECR. For the deployment to succeed you must:
-
-* Add 2 secrets to the GitHub Actions:
-    * AWS_REGION: \<our-region\>
-    * AWS_ROLE_ARN: \<the-IAM-role-used-to-deploy\>
-* Add a repository to the ECR with the same name as the GitHub repo
  
