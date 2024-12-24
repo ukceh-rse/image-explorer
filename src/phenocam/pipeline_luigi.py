@@ -53,7 +53,13 @@ class DefisheyeImages(luigi.Task):
         # Load the image
         image_files = glob.glob(f"{self.directory}/*.jpg")
         for i in image_files:
-            image = imread(i)
+            try:
+                image = imread(i)
+            except OSError as err:
+                logging.error(err)
+                logging.info(i)
+                continue
+
             left, right = slice_image_in_half(image)
 
             # Perform the defisheye operation
@@ -63,8 +69,12 @@ class DefisheyeImages(luigi.Task):
             imsave(f"{self.output_directory}/{Path(i).stem}_L.jpg", defisheye_l)
             defisheye_r = do_defisheye(right)
             # Save the defisheye image
-            imsave(f"{self.output_directory}/{Path(i).stem}_R.jpg", defisheye_r)
-
+            # TODO consider resizing down to 256*256 (or 224) here, save storage
+            try:
+                imsave(f"{self.output_directory}/{Path(i).stem}_R.jpg", defisheye_r)
+            except OSError as err:
+                logging.error(err)
+                logging.info(f"{Path(i).stem}_R.jpg")
         with self.output().open("w") as f:
             f.write("defisheye complete")
 
