@@ -8,6 +8,10 @@
 This repository is an experimental version of image processing pipelines for the Phenocam images on COSMOS-UK sensors. 
 It was created using the [UKCEH python project template](https://github.com/NERC-CEH/python-template) and repurposes some of the pipeline code in [plankton_ml](https://github.com/NERC-CEH/python-template). It is intended for rapid prototyping and use case refinement.
 
+### Note on dependency versions
+
+We're using the [thingsvision](https://github.com/ViCCo-Group/thingsvision) package to simplify extracting features from different computer vision models.
+It currently requires python <3.11 and numpy <2. If the approach stays useful, it makes sense to remove `thingsvision` in favour of model-specific code.
 
 ## Getting Started
 
