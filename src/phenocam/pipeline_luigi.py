@@ -6,10 +6,10 @@ from pathlib import Path
 from typing import List
 
 import luigi
-from skimage.io import imread, imsave
+from skimage.io import imread
 
 from phenocam.image.defisheye import do_defisheye
-from phenocam.image.slice import slice_image_in_half
+from phenocam.image.slice import save_image, slice_image_in_half
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -53,6 +53,7 @@ class DefisheyeImages(luigi.Task):
         # Load the image
         image_files = glob.glob(f"{self.directory}/*.jpg")
         for i in image_files:
+            stem = Path(i).stem
             try:
                 image = imread(i)
             except OSError as err:
@@ -61,20 +62,9 @@ class DefisheyeImages(luigi.Task):
                 continue
 
             left, right = slice_image_in_half(image)
+            save_image(self.output_directory, stem, "L", do_defisheye(left))
+            save_image(self.output_directory, stem, "R", do_defisheye(right))
 
-            # Perform the defisheye operation
-
-            defisheye_l = do_defisheye(left)
-            # Save the defisheye image
-            imsave(f"{self.output_directory}/{Path(i).stem}_L.jpg", defisheye_l)
-            defisheye_r = do_defisheye(right)
-            # Save the defisheye image
-            # TODO consider resizing down to 256*256 (or 224) here, save storage
-            try:
-                imsave(f"{self.output_directory}/{Path(i).stem}_R.jpg", defisheye_r)
-            except OSError as err:
-                logging.error(err)
-                logging.info(f"{Path(i).stem}_R.jpg")
         with self.output().open("w") as f:
             f.write("defisheye complete")
 
