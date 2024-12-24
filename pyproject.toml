@@ -3,12 +3,12 @@ requires = ["setuptools >= 61.0", "autosemver"]
 # build-backend = "setuptools.build_meta"
 
 [project]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "autosemver",
     "defisheye",
     "luigi",
-    "numpy"
+    "numpy",
 ]
 name = "phenocam"
 dynamic = ["version"]
@@ -16,10 +16,11 @@ authors = [{ name = "John Doe", email = "johdoe@ceh.ac.uk" }]
 description = "A minimal setup for a template package."
 
 [project.optional-dependencies]
+pipeline = ["thingsvision"]
 test = ["pytest", "pytest-cov", "parameterized"]
 docs = ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme"]
 lint = ["ruff"]
-dev = ["phenocam[test,docs,lint]"]
+dev = ["phenocam[test,docs,lint,pipeline]"]
 
 [tool.setuptools.dynamic]
 version = { attr = "phenocam.__version__" }
