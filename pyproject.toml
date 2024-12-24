@@ -9,7 +9,8 @@ dependencies = [
     "defisheye",
     "luigi",
     "numpy<2",
-    "scikit-image"
+    "scikit-image",
+    "Pillow"
 ]
 name = "phenocam"
 dynamic = ["version"]
