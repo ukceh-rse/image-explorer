@@ -2,12 +2,14 @@ import pytest
 import numpy as np
 import os
 
+
 @pytest.fixture
 def fixture_dir():
     """
     Base directory for the test fixtures (images, metadata)
     """
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), "fixtures/")
+
 
 @pytest.fixture
 def sample_image():
