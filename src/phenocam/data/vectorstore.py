@@ -1,8 +1,8 @@
 import logging
-import os
 import sqlite3
 import struct
 from abc import ABCMeta, abstractmethod
+from datetime import datetime
 from typing import List, Optional
 
 import sqlite_vec
@@ -10,8 +10,6 @@ import sqlite_vec
 from phenocam.data.db_config import SQLITE_SCHEMA
 
 logging.basicConfig(level=logging.INFO)
-# TODO make this sensibly configurable, not confusingly hardcoded
-STORE = os.path.join(os.path.abspath(os.path.dirname(__file__)), "../../../vectors")
 
 
 def serialize_f32(vector: List[float]) -> bytes:
@@ -101,11 +99,18 @@ class SQLiteVecStore(VectorStore):
             else:
                 raise
 
-    def add(self, url: str, embeddings: List[float], classification: Optional[str] = "") -> None:
+    def add(
+        self,
+        url: str,
+        embeddings: List[float],
+        classification: Optional[str] = "",
+        date: Optional[datetime] = None,
+        site: Optional[str] = "",
+    ) -> None:
         # Implementation for adding vector to SQLite-vec
         self.db.execute(
-            "INSERT INTO embeddings(url, embedding, classification) VALUES (?, ?, ?)",
-            [url, serialize_f32(embeddings), classification],
+            "INSERT INTO embeddings(url, embedding, classification, date, site) VALUES (?, ?, ?, ?, ?)",
+            [url, serialize_f32(embeddings), classification, date, site],
         )
         self.db.commit()
 

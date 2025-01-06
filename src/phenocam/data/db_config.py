@@ -4,6 +4,8 @@ SQLITE_SCHEMA = """
     id integer primary key,
     url text not null,
     classification text not null,
+    date text,
+    site text,
     embedding float[{}]);
 """
 
