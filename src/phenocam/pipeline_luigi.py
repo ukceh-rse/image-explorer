@@ -69,6 +69,31 @@ class DefisheyeImages(luigi.Task):
             f.write("defisheye complete")
 
 
+class ExtractEmbeddings(luigi.Task):
+    directory = luigi.Parameter()
+    output_directory = luigi.Parameter()
+    experiment_name = luigi.Parameter()
+    data_directory = luigi.Parameter()
+
+    def requires(self) -> List[luigi.Task]:
+        return [
+            DefisheyeImages(
+                directory=self.directory,
+                output_directory=self.output_directory,
+                experiment_name=self.experiment_name,
+            )
+        ]
+
+    def output(self) -> luigi.Target:
+        date = datetime.today().date()
+        return luigi.LocalTarget(f"{self.data_directory}/embeddings_complete_{date}.txt")
+
+    def run(self) -> None:
+        with self.output().open("w") as f:
+            f.write("embeddings complete")
+        pass
+
+
 class PhenocamPipeline(luigi.WrapperTask):
     """
     Main wrapper task to execute the entire pipeline.
@@ -77,12 +102,14 @@ class PhenocamPipeline(luigi.WrapperTask):
     directory = luigi.Parameter()
     output_directory = luigi.Parameter()
     experiment_name = luigi.Parameter()
+    data_directory = luigi.Parameter()
 
     def requires(self) -> luigi.Task:
-        return DefisheyeImages(
+        return ExtractEmbeddings(
             directory=self.directory,
             output_directory=self.output_directory,
             experiment_name=self.experiment_name,
+            data_directory=self.data_directory,
         )
 
 
@@ -93,10 +120,13 @@ if __name__ == "__main__":
             "PhenocamPipeline",
             # "--local-scheduler",
             "--directory",
-            "./tests/fixtures",
+            # "./tests/fixtures/",
+            "../Phenocam_samples/2024/WADDN/",
             "--output-directory",
             "./data/images_decollage",
             "--experiment-name",
             "test",
+            "--data-directory",
+            "./data/vectors",
         ]
     )
