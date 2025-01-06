@@ -8,6 +8,7 @@ from typing import List
 import luigi
 from skimage.io import imread
 
+from phenocam.features.utils import create_dataloader, create_dataset, extract_features, get_extractor, save_features
 from phenocam.image.defisheye import do_defisheye
 from phenocam.image.slice import save_image, slice_image_in_half
 
@@ -70,6 +71,12 @@ class DefisheyeImages(luigi.Task):
 
 
 class ExtractEmbeddings(luigi.Task):
+    model_name = "simclr-rn50"
+    source = "ssl"
+    device = "cpu"
+    batch_size = 16
+    module_name = "layer4.2.conv3"
+
     directory = luigi.Parameter()
     output_directory = luigi.Parameter()
     experiment_name = luigi.Parameter()
@@ -89,9 +96,20 @@ class ExtractEmbeddings(luigi.Task):
         return luigi.LocalTarget(f"{self.data_directory}/embeddings_complete_{date}.txt")
 
     def run(self) -> None:
-        with self.output().open("w") as f:
-            f.write("embeddings complete")
-        pass
+        extractor = get_extractor(model_name=self.model_name, source=self.source, device=self.device, pretrained=True)
+        dataset = create_dataset(self.directory, extractor)
+        dataloader = create_dataloader(dataset, self.batch_size, extractor)
+        try:
+            save_features(
+                extract_features(extractor, dataloader, self.module_name),
+                out_path=self.output_directory,
+                file_format="npy",
+            )
+            with self.output().open("w") as f:
+                f.write("embeddings complete")
+            pass
+        except Exception as e:
+            logging.error(e)
 
 
 class PhenocamPipeline(luigi.WrapperTask):
