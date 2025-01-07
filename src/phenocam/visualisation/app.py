@@ -66,10 +66,11 @@ def cached_image_url(filename: str) -> Image:
     Medium-term is to read from s3, authenticated, with requests and return BytesIO
     Longer-term is go back to doing this but with a stable URL scheme
     """
-    parts = filename.split("_")
-    site = parts[0]
-    year = parts[1][:4]
-    return f"{IMAGE_BASEURL}/{year}/{site}/{filename}"
+    # parts = filename.split("_")
+    # site = parts[0]
+    # year = parts[1][:4]
+    # return f"{IMAGE_BASEURL}/{year}/{site}/{filename}"
+    return f"{IMAGE_BASEURL}/{filename}"
 
 
 def closest_grid(start_url: str, size: Optional[int] = 65) -> None:
