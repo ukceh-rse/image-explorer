@@ -9,7 +9,7 @@ import luigi
 import numpy as np
 from skimage.io import imread
 
-from phenocam.data.vectorstore import SQLiteVecStore, serialize_f32, vector_store
+from phenocam.data.vectorstore import SQLiteVecStore, vector_store
 from phenocam.features.utils import (
     create_dataloader,
     create_dataset,
@@ -84,7 +84,7 @@ class ExtractEmbeddings(luigi.Task):
     source = "ssl"
     device = "cpu"
     batch_size = 16
-    module_name = "layer4.2.conv3"
+    module_name = "fc"
 
     directory = luigi.Parameter()
     output_directory = luigi.Parameter()
@@ -154,7 +154,7 @@ class SaveMetadata(luigi.Task):
             for index, name in enumerate(file_names):
                 site, dt = file_metadata(name)
                 # We could make these full HTTPs URLs - think about storage structure
-                self.store().add(url=name, embeddings=serialize_f32(feature_map[index]), date=dt, site=site)
+                self.store().add(url=name, embeddings=feature_map[index], date=dt, site=site)
 
             with self.output().open("w") as f:
                 f.write(f"{self.data_directory}/file_names.txt")
