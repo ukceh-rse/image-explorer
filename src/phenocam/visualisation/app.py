@@ -18,9 +18,9 @@ from phenocam.data.db_config import OPTIONS
 from phenocam.data.vectorstore import vector_store
 
 # KLUDGE - not reproducible at all
-# Depends on a mirror of Phenocam images in /YYYY/SITE/ layout
-# with http server that's python -m http.server
-IMAGE_BASEURL = "https://localhost:8000"
+# Depends on a mirror of Phenocam images, hemispheres _L and _R coming out the pipeline
+# with http server that's just python -m http.server
+IMAGE_BASEURL = "http://localhost:8000"
 
 
 @st.cache_resource
