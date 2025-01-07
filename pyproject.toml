@@ -10,6 +10,7 @@ dependencies = [
     "luigi",
     "numpy<2",
     "scikit-image",
+    "sqlite_vec",
     "Pillow"
 ]
 name = "phenocam"
