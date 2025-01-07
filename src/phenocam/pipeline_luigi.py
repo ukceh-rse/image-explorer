@@ -33,9 +33,18 @@ class CreateOutputDirectory(luigi.Task):
     output_directory = luigi.Parameter()
 
     def output(self) -> luigi.Target:
+        """
+        Define the output target for this task.
+
+        :return: Output target.
+        :rtype: luigi.Target
+        """
         return luigi.LocalTarget(self.output_directory)
 
     def run(self) -> None:
+        """
+        Create the output directory if it does not exist.
+        """
         if not os.path.exists(self.output_directory):
             os.makedirs(self.output_directory)
             logging.info(f"Output directory created: {self.output_directory}")
@@ -53,13 +62,28 @@ class DefisheyeImages(luigi.Task):
     experiment_name = luigi.Parameter()
 
     def requires(self) -> List[luigi.Task]:
+        """
+        Define the dependencies for this task.
+
+        :return: List of required tasks.
+        :rtype: List[luigi.Task]
+        """
         return [CreateOutputDirectory(self.output_directory)]
 
     def output(self) -> luigi.Target:
+        """
+        Define the output target for this task.
+
+        :return: Output target.
+        :rtype: luigi.Target
+        """
         date = datetime.today().date()
         return luigi.LocalTarget(f"{self.directory}/defisheye_complete_{date}.txt")
 
     def run(self) -> None:
+        """
+        Process the images, extract vignettes, and save them with EXIF metadata.
+        """
         # Load the image
         image_files = glob.glob(f"{self.directory}/*.jpg")
         for i in image_files:
@@ -80,6 +104,10 @@ class DefisheyeImages(luigi.Task):
 
 
 class ExtractEmbeddings(luigi.Task):
+    """
+    Task to extract embeddings from images using a pre-trained model.
+    """
+
     model_name = "simclr-rn50"
     source = "ssl"
     device = "cpu"
@@ -92,6 +120,12 @@ class ExtractEmbeddings(luigi.Task):
     data_directory = luigi.Parameter()
 
     def requires(self) -> List[luigi.Task]:
+        """
+        Define the dependencies for this task.
+
+        :return: List of required tasks.
+        :rtype: List[luigi.Task]
+        """
         return [
             DefisheyeImages(
                 directory=self.directory,
@@ -101,12 +135,21 @@ class ExtractEmbeddings(luigi.Task):
         ]
 
     def output(self) -> luigi.Target:
+        """
+        Define the output target for this task.
+
+        :return: Output target.
+        :rtype: luigi.Target
+        """
         date = datetime.today().date()
         return luigi.LocalTarget(f"{self.data_directory}/embeddings_complete_{date}.txt")
 
     def run(self) -> None:
+        """
+        Extract embeddings from images and save them.
+        """
         extractor = get_extractor(model_name=self.model_name, source=self.source, device=self.device, pretrained=True)
-        dataset = create_dataset(self.directory, extractor)
+        dataset = create_dataset(self.output_directory, extractor)
         dataloader = create_dataloader(dataset, self.batch_size, extractor)
         try:
             save_features(
@@ -122,12 +165,22 @@ class ExtractEmbeddings(luigi.Task):
 
 
 class SaveMetadata(luigi.Task):
+    """
+    Task to save metadata for the extracted embeddings.
+    """
+
     directory = luigi.Parameter()
     output_directory = luigi.Parameter()
     experiment_name = luigi.Parameter()
     data_directory = luigi.Parameter()
 
     def requires(self) -> List[luigi.Task]:
+        """
+        Define the dependencies for this task.
+
+        :return: List of required tasks.
+        :rtype: List[luigi.Task]
+        """
         return ExtractEmbeddings(
             directory=self.directory,
             output_directory=self.output_directory,
@@ -136,13 +189,28 @@ class SaveMetadata(luigi.Task):
         )
 
     def store(self) -> SQLiteVecStore:
+        """
+        Create a vector store instance.
+
+        :return: Vector store instance.
+        :rtype: SQLiteVecStore
+        """
         return vector_store("sqlite", f"{self.data_directory}/{self.experiment_name}.db")
 
     def output(self) -> luigi.Target:
+        """
+        Define the output target for this task.
+
+        :return: Output target.
+        :rtype: luigi.Target
+        """
         date = datetime.today().date()
         return luigi.LocalTarget(f"{self.data_directory}/metadata_complete_{date}.txt")
 
     def run(self) -> None:
+        """
+        Save metadata for the extracted embeddings.
+        """
         with open(f"{self.data_directory}/file_names.txt") as f:
             file_names = f.readlines()
 
@@ -174,6 +242,12 @@ class PhenocamPipeline(luigi.WrapperTask):
     data_directory = luigi.Parameter()
 
     def requires(self) -> luigi.Task:
+        """
+        Define the dependencies for this task.
+
+        :return: Required task.
+        :rtype: luigi.Task
+        """
         return SaveMetadata(
             directory=self.directory,
             output_directory=self.output_directory,

@@ -19,11 +19,13 @@ authors = [{ name = "John Doe", email = "johdoe@ceh.ac.uk" }]
 description = "A minimal setup for a template package."
 
 [project.optional-dependencies]
-pipeline = ["thingsvision"]
+# https://stackoverflow.com/a/72493690 - this is why pinned protobuf
+pipeline = ["thingsvision","protobuf==3.20.*"]
 test = ["pytest", "pytest-cov", "parameterized"]
 docs = ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme"]
+viz = ["plotly", "streamlit"]
 lint = ["ruff"]
-dev = ["phenocam[test,docs,lint,pipeline]"]
+dev = ["phenocam[test,docs,lint,pipeline,viz]"]
 
 [tool.setuptools.dynamic]
 version = { attr = "phenocam.__version__" }
