@@ -1,7 +1,9 @@
 """Notebook code, bletherily refactored by CoPilot"""
 
 import glob
+import logging
 import os
+from datetime import datetime
 from typing import List, Optional
 
 import numpy as np
@@ -17,6 +19,19 @@ def file_listing(directory: str, suffix: Optional[str] = "jpg") -> List[str]:
     Left here for now in case it's needed later
     """
     return [os.path.basename(x) for x in glob.glob(f"{directory}/*.{suffix}")]
+
+
+def file_metadata(filename: str) -> tuple:
+    """Return a tuple of metadata for a file"""
+    # The last field is an identifier, inconsistent across years, we probably want to keep it
+    try:
+        site, date, time, _ = filename.split("_")
+    except ValueError as err:
+        logging.error("filename needs to be SITE_DAY_TIME_ID.jpg")
+        logging.error(err)
+        raise
+    dt = datetime.strptime(date + time, "%Y%m%d%H%M%S")
+    return site, dt
 
 
 def create_dataset(root: str, extractor: PyTorchExtractor) -> ImageDataset:
@@ -46,8 +61,8 @@ def main() -> None:
     source = "ssl"
     device = "cpu"
     root = "./tests/sample"
-    batch_size = 1
-    module_name = "layer4.2.conv3"
+    batch_size = 16
+    module_name = "fc"
 
     extractor = get_extractor(model_name=model_name, source=source, device=device, pretrained=True)
     dataset = create_dataset(root, extractor)

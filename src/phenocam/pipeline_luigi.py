@@ -6,9 +6,18 @@ from pathlib import Path
 from typing import List
 
 import luigi
+import numpy as np
 from skimage.io import imread
 
-from phenocam.features.utils import create_dataloader, create_dataset, extract_features, get_extractor, save_features
+from phenocam.data.vectorstore import SQLiteVecStore, serialize_f32, vector_store
+from phenocam.features.utils import (
+    create_dataloader,
+    create_dataset,
+    extract_features,
+    file_metadata,
+    get_extractor,
+    save_features,
+)
 from phenocam.image.defisheye import do_defisheye
 from phenocam.image.slice import save_image, slice_image_in_half
 
@@ -102,14 +111,56 @@ class ExtractEmbeddings(luigi.Task):
         try:
             save_features(
                 extract_features(extractor, dataloader, self.module_name),
-                out_path=self.output_directory,
+                out_path=self.data_directory,
                 file_format="npy",
             )
             with self.output().open("w") as f:
-                f.write("embeddings complete")
+                f.write(f"{self.data_directory}/file_names.txt")
             pass
         except Exception as e:
             logging.error(e)
+
+
+class SaveMetadata(luigi.Task):
+    directory = luigi.Parameter()
+    output_directory = luigi.Parameter()
+    experiment_name = luigi.Parameter()
+    data_directory = luigi.Parameter()
+
+    def requires(self) -> List[luigi.Task]:
+        return ExtractEmbeddings(
+            directory=self.directory,
+            output_directory=self.output_directory,
+            experiment_name=self.experiment_name,
+            data_directory=self.data_directory,
+        )
+
+    def store(self) -> SQLiteVecStore:
+        return vector_store("sqlite", f"{self.data_directory}/{self.experiment_name}.db")
+
+    def output(self) -> luigi.Target:
+        date = datetime.today().date()
+        return luigi.LocalTarget(f"{self.data_directory}/metadata_complete_{date}.txt")
+
+    def run(self) -> None:
+        with open(f"{self.data_directory}/file_names.txt") as f:
+            file_names = f.readlines()
+
+        feature_map = []
+        with open(f"{self.data_directory}/features.npy") as f:
+            feature_map = np.load(f"{self.data_directory}/features.npy")
+
+        try:
+            for index, name in enumerate(file_names):
+                site, dt = file_metadata(name)
+                # We could make these full HTTPs URLs - think about storage structure
+                self.store().add(url=name, embeddings=serialize_f32(feature_map[index]), date=dt, site=site)
+
+            with self.output().open("w") as f:
+                f.write(f"{self.data_directory}/file_names.txt")
+        except Exception as err:
+            logging.error(err)
+            raise
 
 
 class PhenocamPipeline(luigi.WrapperTask):
@@ -123,7 +174,7 @@ class PhenocamPipeline(luigi.WrapperTask):
     data_directory = luigi.Parameter()
 
     def requires(self) -> luigi.Task:
-        return ExtractEmbeddings(
+        return SaveMetadata(
             directory=self.directory,
             output_directory=self.output_directory,
             experiment_name=self.experiment_name,
