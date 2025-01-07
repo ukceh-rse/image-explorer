@@ -149,7 +149,7 @@ class ExtractEmbeddings(luigi.Task):
         Extract embeddings from images and save them.
         """
         extractor = get_extractor(model_name=self.model_name, source=self.source, device=self.device, pretrained=True)
-        dataset = create_dataset(self.output_directory, extractor)
+        dataset = create_dataset(self.output_directory, self.data_directory, extractor)
         dataloader = create_dataloader(dataset, self.batch_size, extractor)
         try:
             save_features(
