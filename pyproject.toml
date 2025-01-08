@@ -13,7 +13,6 @@ dependencies = [
     "scikit-image",
     "sqlite_vec",
     "thingsvision==2.7.0",
-    "protobuf<=2.21",
     "Pillow"
 ]
 name = "phenocam"
