@@ -219,7 +219,7 @@ class SaveMetadata(luigi.Task):
         Save metadata for the extracted embeddings.
         """
         with open(f"{self.data_directory}/file_names.txt") as f:
-            file_names = f.readlines()
+            file_names = f.read().splitlines()
 
         feature_map = []
         with open(f"{self.data_directory}/features.npy") as f:
