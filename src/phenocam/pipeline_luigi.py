@@ -277,11 +277,11 @@ if __name__ == "__main__":
     luigi.run(
         [
             "PhenocamPipeline",
-            # "--local-scheduler",  # remove this option if running with luigid
+            "--local-scheduler",  # remove this option if running with luigid
             "--directory",
-            "../Phenocam_samples/2017/WADDN",
+            "./tests/fixtures",
             "--year",
-            "2017",
+            "1970",
             "--output-directory",
             "./data/images",
             "--experiment-name",
