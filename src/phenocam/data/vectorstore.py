@@ -286,6 +286,12 @@ class SQLiteVecStore(VectorStore):
         ).fetchall()
         return [i for j in labelled for i in j]
 
+    def random(self) -> str:
+        """Return the URL of a random image from the store."""
+        random = self.db.execute("""select url from embeddings order by random() limit 1""").fetchone()
+        if random and len(random):
+            return random[0]
+
     def classes(self) -> List[str]:
         """
         Retrieve all distinct classification labels from the store.
