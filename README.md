@@ -80,6 +80,17 @@ Test the query with input like this:
 }
 ```
 
+### Run the visualisation
+
+There's a simple, self-contained visualisation of the N closest images done in p5js. It's a static HTML file with a Javascript file that calls the API above. It could do a lot more, depends what questions we now want to ask!
+
+```
+cd src/app
+python -m http.server 8082
+```
+
+Then visit http://localhost:8082
+
 ### Building Docs Locally
 
 The documentation is driven by [Sphinx](https://www.sphinx-doc.org/) an industry standard for documentation with a healthy userbase and lots of add-ons. It uses `sphinx-apidoc` to generate API documentation for the codebase from Python docstrings.
