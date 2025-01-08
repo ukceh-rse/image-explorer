@@ -14,7 +14,7 @@ We're using the [thingsvision](https://github.com/ViCCo-Group/thingsvision) pack
 
 ## Getting Started
 
-## Create virtual environment
+## Set up virtual environment
 
 See the installation instructions for [uv](https://docs.astral.sh/uv/#tool-management).
 
@@ -23,6 +23,8 @@ uv python install 3.10
 uv sync
 source .venv/bin/activate
 ```
+
+This should handle the `pip install` of dependencies 
 
 ### Using the Githook
 
@@ -42,6 +44,10 @@ The docs, tests, and linter packages can be installed together with:
 pip install -e .[dev]
 ```
 
+### Run the tests
+
+`python -m pytest`
+
 ### Run the pipeline
 
 This includes a Luigi pipeline which does the following work:
@@ -51,8 +57,28 @@ This includes a Luigi pipeline which does the following work:
 * Extract and store image embeddings using a model from `thingsvision`
 * Stores the embedding vectors, and metadata derived from the filename, in a sqlite database
 
+Run with test data and dummy output locations:
 
+`python src/phenocam/pipeline_luigi.py`
 
+This should create a small image set inside `data/images/` and feature embeddings and the sqlite database inside `data/vectors/`
+
+### Run the FastAPI API
+
+This exposes an API around the vector search abstraction, it basically only has one query which is "find me all the URLs whose embeddings are closest to this one"
+
+`fastapi run src/phenocam/data/api.py`
+
+Visit http://localhost:8000/docs
+
+Test the query with input like this:
+
+```
+{ 
+    "url": "WADDN_20140101_0902_ID405_L.jpg",
+    "n_results": 5
+}
+```
 
 ### Building Docs Locally
 
