@@ -256,12 +256,11 @@ class PhenocamPipeline(luigi.WrapperTask):
         :return: Required task.
         :rtype: luigi.Task
         """
-        # Save all the image extracts into one directory, equivalent to an s3 bucket
-        # Save each year's features and metadata into a distinct directory
+        # Save each year's features image extracts into a distinct directory
         # Save all the metadata into the same database
         return SaveMetadata(
             directory=self.directory,
-            output_directory=self.output_directory,
+            output_directory=Path(self.output_directory) / self.year,
             experiment_name=self.experiment_name,
             data_directory=Path(self.data_directory) / self.year,
             db_directory=self.data_directory,
@@ -280,7 +279,7 @@ if __name__ == "__main__":
             "--year",
             "2024",
             "--output-directory",
-            "./data/images_decollage",
+            "./data/images",
             "--experiment-name",
             "test",
             "--data-directory",
