@@ -8,6 +8,7 @@ dependencies = [
     "autosemver",
     "setuptools", # needed by autosemver
     "defisheye",
+    "fastapi[standard]",
     "luigi",
     "numpy<2",
     "scikit-image",
