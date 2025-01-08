@@ -2,6 +2,7 @@ let img;
 const API_URL = 'http://localhost:8000';
 
 let images = [];
+let urls=[];
 let selectedImg;
 let SIDEBAR_WIDTH;
 let THUMBNAIL_SIZE;
@@ -19,6 +20,18 @@ function setup() {
     selectedImg = img;
   });
 }
+
+function formatDateTime(filename) {
+    // Extract date part: SITE_20190615_120000_xxx.jpg -> 20190615_120000
+    const datePart = filename.split('_').slice(1, 3).join('_');
+    // Parse into Date object
+    const year = datePart.slice(0, 4);
+    const month = datePart.slice(4, 6);
+    const day = datePart.slice(6, 8);
+    const hour = datePart.slice(9, 11);
+    const min = datePart.slice(11, 13);
+    return `${year}-${month}-${day}\n${hour}:${min}`;
+  }
 
 function draw() {
   background(220);
@@ -40,6 +53,13 @@ function draw() {
      const x = startX + col * (THUMBNAIL_SIZE + GRID_GAP);
      const y = row * (THUMBNAIL_SIZE + GRID_GAP);
      image(img, x, y, THUMBNAIL_SIZE, THUMBNAIL_SIZE);
+
+     fill(255);
+     textAlign(CENTER);
+     textSize(12);
+     text(formatDateTime(urls[i]), 
+          x + THUMBNAIL_SIZE/2, 
+          y + THUMBNAIL_SIZE - 30);
    });
 
 }
@@ -67,7 +87,7 @@ async function loadSimilarImages(url) {
         url: filename,
         n_results: 16
       });
-
+      urls = data.urls;
       const promises = data.urls.map(url => loadImage(API_URL + url));
       images = await Promise.all(promises);
       
