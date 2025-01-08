@@ -10,10 +10,19 @@ It was created using the [UKCEH python project template](https://github.com/NERC
 
 ### Note on dependency versions
 
-We're using the [thingsvision](https://github.com/ViCCo-Group/thingsvision) package to simplify extracting features from different computer vision models.
-It currently requires python <3.11 and numpy <2. If the approach stays useful, it makes sense to remove `thingsvision` in favour of model-specific code.
+We're using the [thingsvision](https://github.com/ViCCo-Group/thingsvision) package to simplify extracting features from different computer vision models. It currently requires python <3.11 and numpy <2. If the approach stays useful, it makes sense to remove `thingsvision` in favour of model-specific code.
 
 ## Getting Started
+
+## Create virtual environment
+
+See the installation instructions for [uv](https://docs.astral.sh/uv/#tool-management).
+
+```
+uv python install 3.10
+uv sync
+source .venv/bin/activate
+```
 
 ### Using the Githook
 
@@ -27,37 +36,23 @@ This will set this repo up to use the git hooks in the `.githooks/` directory. T
 
 ### Installing the package
 
-This package is configured to use optional dependencies based on what you are doing with the code.
-
-As a user, you would install the code with only the dependencies needed to run it:
-
-```
-pip install .
-```
-
-To work on the docs:
-
-```
-pip install -e .[docs]
-```
-
-To work on tests:
-
-```
-pip install -e .[tests]
-```
-
-To run the linter and githook:
-
-```
-pip install -e .[lint]
-```
-
 The docs, tests, and linter packages can be installed together with:
 
 ```
 pip install -e .[dev]
 ```
+
+### Run the pipeline
+
+This includes a Luigi pipeline which does the following work:
+
+* Splits a set of dual-hemisphere images into left and right halves
+* `defisheye` to flatten the perspective, and saves the results at 600x600px dimensions
+* Extract and store image embeddings using a model from `thingsvision`
+* Stores the embedding vectors, and metadata derived from the filename, in a sqlite database
+
+
+
 
 ### Building Docs Locally
 
