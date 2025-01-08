@@ -242,7 +242,7 @@ class SQLiteVecStore(VectorStore):
         :rtype: List[float]
         """
         result = self.db.execute("select embedding from embeddings where url = ?", [url]).fetchone()
-        if len(result):
+        if result and len(result):
             return result[0]
         else:
             return None

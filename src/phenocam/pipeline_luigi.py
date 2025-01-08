@@ -76,8 +76,12 @@ class DefisheyeImages(luigi.Task):
         :return: List of required tasks.
         :rtype: List[luigi.Task]
         """
-        return [CreateOutputDirectory(output_directory=self.output_directory,
-                                      data_directory=self.data_directory,)]
+        return [
+            CreateOutputDirectory(
+                output_directory=self.output_directory,
+                data_directory=self.data_directory,
+            )
+        ]
 
     def output(self) -> luigi.Target:
         """
@@ -273,7 +277,7 @@ if __name__ == "__main__":
     luigi.run(
         [
             "PhenocamPipeline",
-            # "--local-scheduler",
+            "--local-scheduler",  # remove this option if running with luigid
             "--directory",
             "./tests/fixtures/",
             "--year",
