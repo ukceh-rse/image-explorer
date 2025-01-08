@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
@@ -9,7 +7,7 @@ app = FastAPI()
 
 
 class SimilarityQuery(BaseModel):
-    embeddings: List[float]
+    url: str
     n_results: int = 25
 
 
@@ -21,7 +19,8 @@ async def health_check() -> dict:
 @app.post("/query/similar")
 async def query_similar(query: SimilarityQuery) -> dict:
     try:
-        results = vector_store.similar(embeddings=query.embeddings, n_results=query.n_results)
+        embeddings = vector_store.get(query.url)
+        results = vector_store.similar(embeddings=embeddings, n_results=query.n_results)
         return {"urls": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

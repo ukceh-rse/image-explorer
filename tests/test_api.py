@@ -15,13 +15,13 @@ def mock_vector_store():
         yield mock
 
 @pytest.fixture
-def sample_embeddings():
-    return {"embeddings": [0.1, 0.2, 0.3], "n_results": 2}
+def sample_query():
+    return {"url": 'url1.jpg', "n_results": 2}
 
 def test_health_check(client):
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
-def test_query_similar(client, mock_vector_store, sample_embeddings):
-    response = client.post("/query/similar", json=sample_embeddings)
+def test_query_similar(client, mock_vector_store, sample_query):
+    response = client.post("/query/similar", json=sample_query)
