@@ -1,7 +1,6 @@
 import glob
 import logging
 import os
-from datetime import datetime
 from pathlib import Path
 from typing import List
 
@@ -31,6 +30,7 @@ class CreateOutputDirectory(luigi.Task):
     """
 
     output_directory = luigi.Parameter()
+    data_directory = luigi.Parameter()
 
     def output(self) -> luigi.Target:
         """
@@ -45,11 +45,18 @@ class CreateOutputDirectory(luigi.Task):
         """
         Create the output directory if it does not exist.
         """
-        if not os.path.exists(self.output_directory):
+
+        if not os.path.exists(Path(self.output_directory) / self.year):
             os.makedirs(self.output_directory)
             logging.info(f"Output directory created: {self.output_directory}")
         else:
             logging.info(f"Output directory already exists: {self.output_directory}")
+
+        if not os.path.exists(Path(self.data_directory) / self.year):
+            os.makedirs(self.data_directory)
+            logging.info(f"Data directory created: {self.data_directory}")
+        else:
+            logging.info(f"Data directory already exists: {self.data_directory}")
 
 
 class DefisheyeImages(luigi.Task):
@@ -59,6 +66,7 @@ class DefisheyeImages(luigi.Task):
 
     directory = luigi.Parameter()
     output_directory = luigi.Parameter()
+    data_directory = luigi.Parameter()
     experiment_name = luigi.Parameter()
 
     def requires(self) -> List[luigi.Task]:
@@ -77,12 +85,11 @@ class DefisheyeImages(luigi.Task):
         :return: Output target.
         :rtype: luigi.Target
         """
-        date = datetime.today().date()
-        return luigi.LocalTarget(f"{self.directory}/defisheye_complete_{date}.txt")
+        return luigi.LocalTarget(f"{self.data_directory}/defisheye_complete.txt")
 
     def run(self) -> None:
         """
-        Process the images, extract vignettes, and save them with EXIF metadata.
+        Process the images; slice them in half, run defisheye, save L and R output at 600x600.
         """
         # Load the image
         image_files = glob.glob(f"{self.directory}/*.jpg")
@@ -131,6 +138,7 @@ class ExtractEmbeddings(luigi.Task):
                 directory=self.directory,
                 output_directory=self.output_directory,
                 experiment_name=self.experiment_name,
+                data_directory=self.data_directory,
             )
         ]
 
@@ -141,8 +149,7 @@ class ExtractEmbeddings(luigi.Task):
         :return: Output target.
         :rtype: luigi.Target
         """
-        date = datetime.today().date()
-        return luigi.LocalTarget(f"{self.data_directory}/embeddings_complete_{date}.txt")
+        return luigi.LocalTarget(f"{self.data_directory}/embeddings_complete.txt")
 
     def run(self) -> None:
         """
@@ -173,6 +180,7 @@ class SaveMetadata(luigi.Task):
     output_directory = luigi.Parameter()
     experiment_name = luigi.Parameter()
     data_directory = luigi.Parameter()
+    db_directory = luigi.Parameter()
 
     def requires(self) -> List[luigi.Task]:
         """
@@ -195,7 +203,7 @@ class SaveMetadata(luigi.Task):
         :return: Vector store instance.
         :rtype: SQLiteVecStore
         """
-        return vector_store("sqlite", f"{self.data_directory}/{self.experiment_name}.db")
+        return vector_store("sqlite", f"{self.db_directory}/{self.experiment_name}.db")
 
     def output(self) -> luigi.Target:
         """
@@ -204,15 +212,14 @@ class SaveMetadata(luigi.Task):
         :return: Output target.
         :rtype: luigi.Target
         """
-        date = datetime.today().date()
-        return luigi.LocalTarget(f"{self.data_directory}/metadata_complete_{date}.txt")
+        return luigi.LocalTarget(f"{self.data_directory}/metadata_complete.txt")
 
     def run(self) -> None:
         """
         Save metadata for the extracted embeddings.
         """
         with open(f"{self.data_directory}/file_names.txt") as f:
-            file_names = f.readlines()
+            file_names = f.read().splitlines()
 
         feature_map = []
         with open(f"{self.data_directory}/features.npy") as f:
@@ -240,6 +247,7 @@ class PhenocamPipeline(luigi.WrapperTask):
     output_directory = luigi.Parameter()
     experiment_name = luigi.Parameter()
     data_directory = luigi.Parameter()
+    year = luigi.Parameter()
 
     def requires(self) -> luigi.Task:
         """
@@ -248,11 +256,14 @@ class PhenocamPipeline(luigi.WrapperTask):
         :return: Required task.
         :rtype: luigi.Task
         """
+        # Save each year's features image extracts into a distinct directory
+        # Save all the metadata into the same database
         return SaveMetadata(
             directory=self.directory,
-            output_directory=self.output_directory,
+            output_directory=Path(self.output_directory) / self.year,
             experiment_name=self.experiment_name,
-            data_directory=self.data_directory,
+            data_directory=Path(self.data_directory) / self.year,
+            db_directory=self.data_directory,
         )
 
 
@@ -265,8 +276,10 @@ if __name__ == "__main__":
             "--directory",
             # "./tests/fixtures/",
             "../Phenocam_samples/2024/WADDN/",
+            "--year",
+            "2024",
             "--output-directory",
-            "./data/images_decollage",
+            "./data/images",
             "--experiment-name",
             "test",
             "--data-directory",
