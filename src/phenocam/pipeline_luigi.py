@@ -46,13 +46,13 @@ class CreateOutputDirectory(luigi.Task):
         Create the output directory if it does not exist.
         """
 
-        if not os.path.exists(Path(self.output_directory)):
+        if not Path(self.output_directory).exists():
             os.makedirs(self.output_directory)
             logging.info(f"Output directory created: {self.output_directory}")
         else:
             logging.info(f"Output directory already exists: {self.output_directory}")
 
-        if not os.path.exists(Path(self.data_directory)):
+        if not Path(self.data_directory).exists():
             os.makedirs(self.data_directory)
             logging.info(f"Data directory created: {self.data_directory}")
         else:
