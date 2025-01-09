@@ -242,7 +242,7 @@ class SQLiteVecStore(VectorStore):
         :rtype: List[float]
         """
         result = self.db.execute("select embedding from embeddings where url = ?", [url]).fetchone()
-        if len(result):
+        if result and len(result):
             return result[0]
         else:
             return None
@@ -285,6 +285,12 @@ class SQLiteVecStore(VectorStore):
             """select url from embeddings where classification = ? limit ?""", (label, n_results)
         ).fetchall()
         return [i for j in labelled for i in j]
+
+    def random(self) -> str:
+        """Return the URL of a random image from the store."""
+        random = self.db.execute("""select url from embeddings order by random() limit 1""").fetchone()
+        if random and len(random):
+            return random[0]
 
     def classes(self) -> List[str]:
         """

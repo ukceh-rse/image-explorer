@@ -46,13 +46,13 @@ class CreateOutputDirectory(luigi.Task):
         Create the output directory if it does not exist.
         """
 
-        if not os.path.exists(Path(self.output_directory) / self.year):
+        if not Path(self.output_directory).exists():
             os.makedirs(self.output_directory)
             logging.info(f"Output directory created: {self.output_directory}")
         else:
             logging.info(f"Output directory already exists: {self.output_directory}")
 
-        if not os.path.exists(Path(self.data_directory) / self.year):
+        if not Path(self.data_directory).exists():
             os.makedirs(self.data_directory)
             logging.info(f"Data directory created: {self.data_directory}")
         else:
@@ -76,7 +76,12 @@ class DefisheyeImages(luigi.Task):
         :return: List of required tasks.
         :rtype: List[luigi.Task]
         """
-        return [CreateOutputDirectory(self.output_directory)]
+        return [
+            CreateOutputDirectory(
+                output_directory=self.output_directory,
+                data_directory=self.data_directory,
+            )
+        ]
 
     def output(self) -> luigi.Target:
         """
@@ -272,12 +277,11 @@ if __name__ == "__main__":
     luigi.run(
         [
             "PhenocamPipeline",
-            # "--local-scheduler",
+            "--local-scheduler",  # remove this option if running with luigid
             "--directory",
-            # "./tests/fixtures/",
-            "../Phenocam_samples/2024/WADDN/",
+            "./tests/fixtures",
             "--year",
-            "2024",
+            "1970",
             "--output-directory",
             "./data/images",
             "--experiment-name",

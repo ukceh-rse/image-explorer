@@ -6,11 +6,14 @@ requires = ["setuptools >= 61.0", "autosemver"]
 requires-python = ">=3.10"
 dependencies = [
     "autosemver",
+    "setuptools", # needed by autosemver
     "defisheye",
+    "fastapi[standard]",
     "luigi",
     "numpy<2",
     "scikit-image",
     "sqlite_vec",
+    "thingsvision==2.7.0",
     "Pillow"
 ]
 name = "phenocam"
@@ -20,12 +23,10 @@ description = "A minimal setup for a template package."
 
 [project.optional-dependencies]
 # https://stackoverflow.com/a/72493690 - this is why pinned protobuf
-pipeline = ["thingsvision","protobuf==3.20.*"]
 test = ["pytest", "pytest-cov", "parameterized"]
 docs = ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme"]
-viz = ["plotly", "streamlit"]
 lint = ["ruff"]
-dev = ["phenocam[test,docs,lint,pipeline,viz]"]
+dev = ["phenocam[test,docs,lint]"]
 
 [tool.setuptools.dynamic]
 version = { attr = "phenocam.__version__" }
