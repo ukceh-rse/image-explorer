@@ -1,12 +1,13 @@
 # Phenocam image processing
 
-[![tests badge](https://github.com/ukceh-rse/fdri-phenocam/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ukceh-rse/fdri-phenocam/actions)
-[![docs badge](https://github.com/ukceh-rse/fdri-phenocam/actions/workflows/deploy-docs.yml/badge.svg)](https://ukceh-rse.github.io/fdri-phenocam/)
+[![tests badge](https://github.com/ukceh-rse/image-explorer/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ukceh-rse/image-explorer/actions)
+[![docs badge](https://github.com/ukceh-rse/image-explorer/actions/workflows/deploy-docs.yml/badge.svg)](https://ukceh-rse.github.io/image-explorer/)
 
-[Read the docs!](https://ukceh-rse.github.io/fdri-phenocam)
+[Read the docs!](https://ukceh-rse.github.io/image-explorer/)
 
-This repository is an experimental version of image processing pipelines for the Phenocam images on COSMOS-UK sensors. 
-It was created using the [UKCEH python project template](https://github.com/NERC-CEH/python-template) and repurposes some of the pipeline code in [plankton_ml](https://github.com/NERC-CEH/python-template). It is intended for rapid prototyping and use case refinement.
+This repository started as image processing pipelines, search and navigation utilities.
+
+It was originally created as a rapid prototype for COSMOS-UK Phenocam data, using the [UKCEH python project template](https://github.com/NERC-CEH/python-template) and repurposes some of the pipeline code in [plankton_ml](https://github.com/NERC-CEH/python-template).
 
 ### Note on dependency versions
 
