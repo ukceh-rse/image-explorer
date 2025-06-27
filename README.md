@@ -1,7 +1,7 @@
 # Image explorer
 
-[![tests badge](https://github.com/ukceh-rse/image-explorer/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ukceh-rse/image-explorer/actions)
-[![docs badge](https://github.com/ukceh-rse/image-explorer/actions/workflows/deploy-docs.yml/badge.svg)](https://ukceh-rse.github.io/image-explorer/)
+[![Python Install and Tests](https://github.com/ukceh-rse/image-explorer/actions/workflows/test.yml/badge.svg)](https://github.com/ukceh-rse/image-explorer/actions/workflows/test.yml)
+[![Documentation Deployment](https://github.com/ukceh-rse/image-explorer/actions/workflows/deploy_docs.yml/badge.svg)](https://github.com/ukceh-rse/image-explorer/actions/workflows/deploy_docs.yml)
 
 [Read the docs!](https://ukceh-rse.github.io/image-explorer/)
 
