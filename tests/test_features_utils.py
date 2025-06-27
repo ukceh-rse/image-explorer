@@ -1,4 +1,4 @@
-from phenocam.features.utils import file_metadata
+from imagesearch.features.utils import file_metadata
 from datetime import datetime
 import pytest
 

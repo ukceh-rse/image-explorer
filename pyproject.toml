@@ -13,10 +13,10 @@ dependencies = [
     "numpy<2",
     "scikit-image",
     "sqlite_vec",
-    "thingsvision==2.7.0",
+    "thingsvision",
     "Pillow"
 ]
-name = "phenocam"
+name = "imagesearch"
 dynamic = ["version"]
 authors = [{ name = "John Doe", email = "johdoe@ceh.ac.uk" }]
 description = "A minimal setup for a template package."
@@ -26,19 +26,19 @@ description = "A minimal setup for a template package."
 test = ["pytest", "pytest-cov", "parameterized"]
 docs = ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme"]
 lint = ["ruff"]
-dev = ["phenocam[test,docs,lint]"]
+dev = ["imagesearch[test,docs,lint]"]
 
 [tool.setuptools.dynamic]
-version = { attr = "phenocam.__version__" }
+version = { attr = "imagesearch.__version__" }
 
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["phenocam*"]
+include = ["imagesearch*"]
 
 [tool.pytest.ini_options]
 
-addopts = "--cov=phenocam"
+addopts = "--cov=imagesearch"
 markers = [
     "slow: Marks slow tests",
 ]

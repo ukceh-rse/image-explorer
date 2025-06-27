@@ -1,5 +1,5 @@
 import numpy as np
-from phenocam.image.defisheye import do_defisheye
+from imagesearch.image.defisheye import do_defisheye
 
 
 def test_do_defisheye_returns_ndarray(sample_image):

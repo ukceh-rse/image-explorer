@@ -42,7 +42,7 @@ This will set this repo up to use the git hooks in the `.githooks/` directory. T
 The docs, tests, and linter packages can be installed together with:
 
 ```
-pip install -e .[dev]
+uv pip install -e .[dev]
 ```
 
 ### Run the tests

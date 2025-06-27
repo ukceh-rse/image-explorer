@@ -1,4 +1,4 @@
-from phenocam.image.slice import slice_image_in_half, save_image
+from imagesearch.image.slice import slice_image_in_half, save_image
 import numpy as np
 from PIL import Image
 from pathlib import Path
