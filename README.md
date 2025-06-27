@@ -1,4 +1,4 @@
-# Phenocam image processing
+# Image explorer
 
 [![tests badge](https://github.com/ukceh-rse/image-explorer/actions/workflows/pipeline.yml/badge.svg)](https://github.com/ukceh-rse/image-explorer/actions)
 [![docs badge](https://github.com/ukceh-rse/image-explorer/actions/workflows/deploy-docs.yml/badge.svg)](https://ukceh-rse.github.io/image-explorer/)
