@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 import pytest
 from unittest.mock import Mock, patch
-from phenocam.data.api import app
+from imagesearch.data.api import app
 
 @pytest.fixture
 def client():
@@ -9,7 +9,7 @@ def client():
 
 @pytest.fixture
 def mock_vector_store():
-    with patch('phenocam.data.api.vector_store') as mock:
+    with patch('imagesearch.data.api.vector_store') as mock:
         mock.similar.return_value = ["url1.jpg", "url2.jpg"]
         mock.labelled.return_value = ["url3.jpg", "url4.jpg"]
         yield mock
